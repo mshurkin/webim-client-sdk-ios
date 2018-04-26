@@ -105,14 +105,9 @@ final class MessageHolder {
             
             let firstMessage = currentChatMessages.first!
             if message == firstMessage {
-                if !firstMessage.hasHistoryComponent() {
-                    historyStorage.getLatestHistory(byLimit: limit,
-                                                    completion: completion)
-                } else {
-                    getMessagesFromHistoryBefore(id: firstMessage.getHistoryID()!,
-                                                 limit: limit,
-                                                 completion: completion)
-                }
+                requestHistory(beforeTimestamp: firstMessage.getTimeInMicrosecond(),
+                               limit: limit,
+                               completion: completion)
             } else {
                 getMessagesFromCurrentChatBefore(message: message,
                                                  limit: limit,
@@ -327,7 +322,28 @@ final class MessageHolder {
         
         lastChatMessageIndex = currentChatMessages.count
     }
-    
+
+    private func requestHistory(beforeTimestamp: Int64,
+                                limit: Int,
+                                completion: @escaping ([Message]) -> ()) {
+        remoteHistoryProvider.requestHistory(beforeTimestamp: beforeTimestamp,
+                                             completion: { [weak self] (messages: [MessageImpl], hasMoreMessages: Bool) in
+                                                if !hasMoreMessages {
+                                                    self?.reachedEndOfRemoteHistory = true
+                                                }
+
+                                                if !messages.isEmpty {
+                                                    self?.historyStorage.receiveHistoryBefore(messages: messages,
+                                                                                              hasMoreMessages: hasMoreMessages)
+                                                }
+
+                                                self?.respondTo(messages: messages,
+                                                                limitOfMessages: limit,
+                                                                completion: completion)
+        })
+    }
+
+
     private func requestHistory(beforeID id: HistoryID,
                                 limit: Int,
                                 completion: @escaping ([Message]) -> ()) {
