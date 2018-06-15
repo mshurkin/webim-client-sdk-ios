@@ -405,11 +405,7 @@ final class SQLiteHistoryStorage: HistoryStorage {
             let dbPath = "\(documentsPath)/\(name)"
             self.db = try! Connection(dbPath)
             self.db?.busyTimeout = 1.0
-            self.db?.busyHandler() { tries in
-                if tries >= 3 {
-                    return false
-                }
-                
+            self.db?.busyHandler() { _ in
                 return true
             }
             
