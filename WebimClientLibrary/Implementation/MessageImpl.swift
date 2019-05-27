@@ -375,7 +375,7 @@ final class MessageAttachmentImpl {
                                                                         return nil
         }
         
-        let fileParameters = FileParametersItem(jsonDictionary: textDictionary!)
+        let fileParameters = FileParametersItem(jsonDictionary: textDictionary)
         guard let filename = fileParameters.getFilename(),
             let guid = fileParameters.getGUID(),
             let contentType = fileParameters.getContentType() else {

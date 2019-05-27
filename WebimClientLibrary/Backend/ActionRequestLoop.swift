@@ -125,7 +125,7 @@ class ActionRequestLoop: AbstractRequestLoop {
             do {
                 let data = try self.perform(request: urlRequest!)
                 if let dataJSON = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
-                    if let error = dataJSON?[AbstractRequestLoop.ResponseFields.error.rawValue] as? String {
+                    if let error = dataJSON[AbstractRequestLoop.ResponseFields.error.rawValue] as? String {
                         switch error {
                         case WebimInternalError.reinitializationRequired.rawValue:
                             do {
@@ -166,7 +166,7 @@ class ActionRequestLoop: AbstractRequestLoop {
                     }
                     
                     // Some internal errors can be received inside "error" field inside "data" field.
-                    if let dataDictionary = dataJSON?[AbstractRequestLoop.ResponseFields.data.rawValue] as? [String: Any],
+                    if let dataDictionary = dataJSON[AbstractRequestLoop.ResponseFields.data.rawValue] as? [String: Any],
                         let errorString = dataDictionary[AbstractRequestLoop.DataFields.error.rawValue] as? String {
                         self.handleDataMessage(error: errorString,
                                                ofRequest: request)

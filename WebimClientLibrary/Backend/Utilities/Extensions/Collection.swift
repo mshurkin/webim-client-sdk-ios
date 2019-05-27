@@ -34,7 +34,7 @@ extension Collection {
      - Copyright:
      2018 Webim
      */
-    func batched(by size: IndexDistance) -> BatchedCollection<Self> {
+    func batched(by size: Int) -> BatchedCollection<Self> {
         return BatchedCollection(base: self,
                                  size: size)
     }
@@ -54,7 +54,7 @@ struct BatchedCollection<Base: Collection>: Collection {
     
     // MARK: - Properties
     let base: Base
-    let size: Base.IndexDistance
+    let size: Int
     
     // MARK: - Methods
     private func nextBreak(after idx: Base.Index) -> Base.Index {
